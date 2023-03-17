@@ -3,7 +3,7 @@
   "name": "Twitch Card Game",
   "version": "1.0.0",
   "description": "Cette extension permet d'ajouter un bouton à côté du chat sur twitch pour pull sur le bot Twitch Card Game",
-  "manifest_version": 1,
+  "manifest_version": 3,
   "icons": {
     "16": "favicon.ico",
     "48": "favicon.ico",
