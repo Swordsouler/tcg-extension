@@ -1,11 +1,11 @@
-const REACT_APP_TCG_GRAPHQL_ENDPOINT =
-    "https://6zib772umbddfjgkly2wymxguu.appsync-api.eu-west-3.amazonaws.com/graphql";
-const REACT_APP_TCG_GRAPHQL_API_KEY = "da2-lomv4grhsvdyvn5tnx7ftc2x5q";
+const GRAPHQL_ENDPOINT =
+    "https://wckta6btbra3vflgp7wyfhtwgi.appsync-api.eu-west-3.amazonaws.com/graphql";
+const GRAPHQL_API_KEY = "da2-u4thh2625jbdvgi5biipvahfwq";
 
 let span;
 let enterPressed = false;
 let cooldown = 0;
-let twitchID = "";
+let twitchID = localStorage.getItem("twitchID") ?? "";
 
 let createSpan = setInterval(searchButton, 5000);
 
@@ -37,10 +37,12 @@ async function searchButton() {
         span.onclick = setupTwitchID;
         div.appendChild(span);
         //add event listener when enter is clicked but do it only once
-        document.addEventListener("keydown", async (e) => {
+        document.addEventListener("keydown", (e) => {
             if (e.key === "Enter" && !enterPressed) {
                 enterPressed = true;
-                cooldown = (await canCollect(twitchID)) ?? 0;
+                setTimeout(async () => {
+                    cooldown = (await canCollect(twitchID)) ?? 0;
+                }, 3000);
             }
         });
         document.addEventListener("keyup", (e) => {
@@ -92,7 +94,7 @@ async function canCollect(twitchID) {
     const options = {
         method: "POST",
         headers: {
-            "x-api-key": REACT_APP_TCG_GRAPHQL_API_KEY,
+            "x-api-key": GRAPHQL_API_KEY,
         },
         body: JSON.stringify({ query: queryUserCardsByDate, variables }),
     };
@@ -102,7 +104,7 @@ async function canCollect(twitchID) {
     let response;
 
     try {
-        response = await fetch(REACT_APP_TCG_GRAPHQL_ENDPOINT, options);
+        response = await fetch(GRAPHQL_ENDPOINT, options);
         body = await response.json();
         if (body.errors) statusCode = 400;
     } catch (error) {
