@@ -6,6 +6,8 @@ let span;
 let enterPressed = false;
 let cooldown = 0;
 let twitchID = localStorage.getItem("twitchID") ?? "";
+let keyDownListener = null;
+let keyUpListener = null;
 
 let createSpan = setInterval(searchButton, 5000);
 
@@ -37,15 +39,17 @@ async function searchButton() {
         span.onclick = setupTwitchID;
         div.appendChild(span);
         //add event listener when enter is clicked but do it only once
-        document.addEventListener("keydown", (e) => {
+        keyDownListener = document.addEventListener("keydown", (e) => {
             if (e.key === "Enter" && !enterPressed) {
                 enterPressed = true;
-                setTimeout(async () => {
-                    cooldown = (await canCollect(twitchID)) ?? 0;
-                }, 3000);
+                if (cooldown <= 0) {
+                    setTimeout(async () => {
+                        cooldown = (await canCollect(twitchID)) ?? 0;
+                    }, 3000);
+                }
             }
         });
-        document.addEventListener("keyup", (e) => {
+        keyUpListener = document.addEventListener("keyup", (e) => {
             if (e.key === "Enter" && enterPressed) {
                 enterPressed = false;
             }
@@ -67,6 +71,8 @@ async function searchButton() {
             if (!document.body.contains(span)) {
                 clearInterval(timer);
                 createSpan = setInterval(searchButton, 5000);
+                document.removeEventListener("keydown", keyDownListener);
+                document.removeEventListener("keyup", keyUpListener);
             }
         }, 1000);
     }
