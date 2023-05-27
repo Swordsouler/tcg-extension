@@ -11,7 +11,20 @@ let keyUpListener = null;
 
 let createSpan = setInterval(searchButton, 5000);
 
+const allowedStreams = ["swordsouler", "crysthallive"];
+
 async function searchButton() {
+    //get the url of the page
+    const url = window.location.href;
+    //split the url to get the streamer name
+    const urlSplit = url.split("/");
+    const streamerName = urlSplit[urlSplit.length - 1].toLowerCase();
+    //check if the streamer is swordsouler
+    const isAllowed = allowedStreams.some((streamer) => {
+        return streamerName.includes(streamer);
+    });
+    if (!isAllowed) return;
+
     let div = document.querySelector(
         "#live-page-chat > div > div > div > div > div > section > div > div.Layout-sc-1xcs6mc-0.bGyiZe.chat-input > div:nth-child(2) > div.Layout-sc-1xcs6mc-0.XTygj.chat-input__buttons-container > div.Layout-sc-1xcs6mc-0.hROlnu > div > div > div > div.Layout-sc-1xcs6mc-0.imLGzh"
     );
